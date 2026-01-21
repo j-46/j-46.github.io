@@ -1,36 +1,26 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <title>Moja strona</title>
-
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script id="MathJax-script" async
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-</script>
-
-
+    <meta charset="UTF-8">
+    <title>Kwadrat liczby</title>
 </head>
 <body>
 
-  <h1>NOT DONE YET</h1>
+    <h2>Oblicz kwadrat liczby</h2>
 
-  
-  <h1>Hello! 👋</h1>
-  <h2>Here are some of my favourite math formulas: </h2>
+    <input type="number" id="liczba">
+    <button onclick="oblicz()">Policz</button>
 
-  
-  <h3>\( e^{i \pi} + 1 = 0 \)</h3>
-  <h3>\(\sin(x)
+    <p id="wynik"></p>
 
-  <h1>h1</h1>
-  <h2>h2</h2>
-  <h3>h3</h3>
-  <h4>h4</h4>
-  <h5>h5</h5>
-  <h6>h6</h6>
-
-  
+    <script>
+        function oblicz() {
+            let x = document.getElementById("liczba").value;
+            let kwadrat = x * x;
+            document.getElementById("wynik").innerText =
+                "Kwadrat liczby to: " + kwadrat;
+        }
+    </script>
 
 </body>
 </html>
