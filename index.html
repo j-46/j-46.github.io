@@ -6,7 +6,7 @@
 <body>
 <!-- MODUŁ: input -> LaTeX -->
 <div class="latex-module">
-  <input type="text" id="mathInput" placeholder="Wpisz np. 4x^2 + 3x">
+  <input type="text" id="mathInput" placeholder="Type your function">
   <div id="mathOutput"></div>
 </div>
 
@@ -22,7 +22,7 @@
 
     // Prosta konwersja (możesz rozbudować)
     val = val
-      .replace(/\^(\d+)/g, "^{\$1}")   // x^2 -> x^{2}
+      .replace(/\^(\d+)/g, "^{$1}")   // x^2 -> x^{2}
       .replace(/(\d)x/g, "$1x");       // 4x -> 4x (placeholder)
 
     output.innerHTML = `\\(${val}\\)`;
