@@ -1,34 +1,11 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <title>Numerical approximations of definite integrals </title>
-</head>
-<body>
-<!-- MODUŁ: input -> LaTeX -->
-<div class="latex-module">
-  <input type="text" id="mathInput" placeholder="Type your function">
-  <div id="mathOutput"></div>
-</div>
-
-<!-- MathJax -->
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-<script>
-  const input = document.getElementById("mathInput");
-  const output = document.getElementById("mathOutput");
-
-  input.addEventListener("input", () => {
-    let val = input.value;
-
-    // Prosta konwersja (możesz rozbudować)
-    val = val
-      .replace(/\^(\d+)/g, "^{$1}")   // x^2 -> x^{2}
-      .replace(/(\d)x/g, "$1x");       // 4x -> 4x (placeholder)
-
-    output.innerHTML = `\\(${val}\\)`;
-
-    MathJax.typesetPromise([output]);
-  });
-</script>
-</body>
+<!DOCTYPE=html>
+<html>
+    <head>
+        <ttile>my website :)</ttile>
+    </head>
+    <body>
+        <h3>This is my website :)</h3>
+        <hr>
+        <a href="www.youtube.com" title="Click this to go to Youtube">Youtube</a>
+    </body>
 </html>
