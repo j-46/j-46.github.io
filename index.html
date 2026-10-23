@@ -1,429 +1,443 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Task Tracker</title>
+  <title>Dot Guessing Game</title>
 
   <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
 
     body {
-      font-family: Arial, sans-serif;
+      margin: 0;
       min-height: 100vh;
-      background: #111827;
-      color: #f9fafb;
       display: flex;
       justify-content: center;
-      padding: 40px 20px;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
     }
 
-    .container {
-      width: 100%;
-      max-width: 700px;
+    .game {
+      width: 90%;
+      max-width: 650px;
+      text-align: center;
+      background: #1e293b;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
     }
 
     h1 {
-      text-align: center;
       font-size: 42px;
-      margin-bottom: 8px;
+      margin-top: 0;
     }
 
-    .subtitle {
-      text-align: center;
-      color: #9ca3af;
-      margin-bottom: 30px;
+    .instructions {
+      color: #94a3b8;
+      font-size: 17px;
+      line-height: 1.5;
     }
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 25px;
-    }
-
-    .stat {
-      background: #1f2937;
-      border-radius: 14px;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .stat-number {
-      font-size: 32px;
+    .round {
+      font-size: 18px;
+      color: #60a5fa;
       font-weight: bold;
+      margin: 25px 0;
     }
 
-    .stat-label {
-      color: #9ca3af;
-      margin-top: 5px;
-      font-size: 14px;
-    }
-
-    .progress-container {
-      background: #1f2937;
-      padding: 20px;
-      border-radius: 14px;
-      margin-bottom: 20px;
-    }
-
-    .progress-info {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      color: #d1d5db;
-    }
-
-    .progress-bar {
+    #dotArea {
       width: 100%;
-      height: 12px;
-      background: #374151;
-      border-radius: 20px;
+      height: 300px;
+      background: #0f172a;
+      border-radius: 15px;
+      position: relative;
       overflow: hidden;
+      margin: 20px 0;
     }
 
-    .progress {
-      height: 100%;
-      width: 0%;
-      background: #22c55e;
-      border-radius: 20px;
-      transition: width 0.3s ease;
+    .dot {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
     }
 
-    .add-task {
-      display: flex;
+    #message {
+      font-size: 22px;
+      min-height: 30px;
+      margin: 20px 0;
+    }
+
+    .guess-area {
+      display: none;
       gap: 10px;
-      margin-bottom: 20px;
+      justify-content: center;
     }
 
     input {
-      flex: 1;
-      padding: 15px;
+      width: 150px;
+      padding: 14px;
       border: none;
       border-radius: 10px;
-      background: #1f2937;
-      color: white;
-      font-size: 16px;
+      font-size: 18px;
+      text-align: center;
       outline: none;
-    }
-
-    input:focus {
-      outline: 2px solid #3b82f6;
     }
 
     button {
       border: none;
-      cursor: pointer;
       border-radius: 10px;
-      font-size: 15px;
+      padding: 14px 25px;
+      font-size: 17px;
       font-weight: bold;
-    }
-
-    .add-button {
-      padding: 0 22px;
+      cursor: pointer;
       background: #3b82f6;
       color: white;
     }
 
-    .add-button:hover {
+    button:hover {
       background: #2563eb;
     }
 
-    .tasks {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    #startButton {
+      margin-top: 20px;
+      font-size: 20px;
+      padding: 16px 35px;
     }
 
-    .task {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: #1f2937;
-      padding: 15px;
-      border-radius: 12px;
-      transition: 0.2s;
-    }
-
-    .task.completed {
-      opacity: 0.6;
-    }
-
-    .task.completed .task-text {
-      text-decoration: line-through;
-    }
-
-    .checkbox {
-      width: 22px;
-      height: 22px;
-      border: 2px solid #6b7280;
-      border-radius: 6px;
-      flex-shrink: 0;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .task.completed .checkbox {
-      background: #22c55e;
-      border-color: #22c55e;
-    }
-
-    .checkbox::after {
-      content: "✓";
-      color: white;
-      font-weight: bold;
+    #result {
       display: none;
     }
 
-    .task.completed .checkbox::after {
-      display: block;
+    .score {
+      font-size: 60px;
+      font-weight: bold;
+      color: #22c55e;
+      margin: 20px;
     }
 
-    .task-text {
-      flex: 1;
-      font-size: 16px;
-      word-break: break-word;
+    .answer {
+      color: #94a3b8;
+      font-size: 18px;
     }
 
-    .delete {
-      background: #ef4444;
-      color: white;
-      padding: 8px 12px;
+    .correct {
+      color: #22c55e;
     }
 
-    .delete:hover {
-      background: #dc2626;
-    }
-
-    .empty {
-      text-align: center;
-      color: #6b7280;
-      padding: 40px;
-      background: #1f2937;
-      border-radius: 12px;
-    }
-
-    .reset {
-      width: 100%;
-      margin-top: 20px;
-      padding: 13px;
-      background: #374151;
-      color: #d1d5db;
-    }
-
-    .reset:hover {
-      background: #4b5563;
-    }
-
-    @media (max-width: 550px) {
-      h1 {
-        font-size: 32px;
-      }
-
-      .stats {
-        grid-template-columns: 1fr;
-      }
-
-      .add-task {
-        flex-direction: column;
-      }
-
-      .add-button {
-        padding: 14px;
-      }
+    .wrong {
+      color: #ef4444;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
+  <div class="game">
 
-    <h1>Task Tracker</h1>
-    <p class="subtitle">Track how much you get done.</p>
+    <div id="gameScreen">
 
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-number" id="total">0</div>
-        <div class="stat-label">Total Tasks</div>
+      <h1>Dot Guess</h1>
+
+      <p class="instructions">
+        You'll see some dots for a very short time.<br>
+        Try to remember how many there were!
+      </p>
+
+      <div class="round" id="round">
+        Round 0 / 5
       </div>
 
-      <div class="stat">
-        <div class="stat-number" id="completed">0</div>
-        <div class="stat-label">Completed</div>
+      <div id="dotArea"></div>
+
+      <div id="message">
+        Press Start when you're ready.
       </div>
 
-      <div class="stat">
-        <div class="stat-number" id="remaining">0</div>
-        <div class="stat-label">Remaining</div>
-      </div>
-    </div>
-
-    <div class="progress-container">
-      <div class="progress-info">
-        <span>Progress</span>
-        <span id="percentage">0%</span>
-      </div>
-
-      <div class="progress-bar">
-        <div class="progress" id="progress"></div>
-      </div>
-    </div>
-
-    <div class="add-task">
-      <input
-        id="taskInput"
-        type="text"
-        placeholder="What do you need to do?"
-      >
-
-      <button class="add-button" onclick="addTask()">
-        Add Task
+      <button id="startButton" onclick="startGame()">
+        Start Game
       </button>
+
+      <div class="guess-area" id="guessArea">
+        <input
+          id="guessInput"
+          type="number"
+          min="1"
+          placeholder="Your guess"
+        >
+
+        <button onclick="submitGuess()">
+          Guess
+        </button>
+      </div>
+
     </div>
 
-    <div class="tasks" id="taskList"></div>
 
-    <button class="reset" onclick="resetTasks()">
-      Reset All Tasks
-    </button>
+    <div id="result">
+
+      <h1>Game Over!</h1>
+
+      <p>Your score:</p>
+
+      <div class="score">
+        <span id="finalScore">0</span> / 5
+      </div>
+
+      <p id="resultMessage"></p>
+
+      <button onclick="restartGame()">
+        Play Again
+      </button>
+
+    </div>
 
   </div>
 
-  <script>
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-    function saveTasks() {
-      localStorage.setItem("tasks", JSON.stringify(tasks));
+  <script>
+
+    const TOTAL_ROUNDS = 5;
+
+    let currentRound = 0;
+    let score = 0;
+    let correctAnswer = 0;
+    let acceptingGuess = false;
+
+
+    function startGame() {
+
+      currentRound = 0;
+      score = 0;
+
+      document.getElementById("startButton").style.display = "none";
+      document.getElementById("guessArea").style.display = "none";
+
+      nextRound();
     }
 
-    function addTask() {
-      const input = document.getElementById("taskInput");
-      const text = input.value.trim();
 
-      if (text === "") return;
+    function nextRound() {
 
-      tasks.push({
-        id: Date.now(),
-        text: text,
-        completed: false
-      });
+      if (currentRound >= TOTAL_ROUNDS) {
+        endGame();
+        return;
+      }
 
+      currentRound++;
+
+      document.getElementById("round").textContent =
+        `Round ${currentRound} / ${TOTAL_ROUNDS}`;
+
+      document.getElementById("message").textContent =
+        "Get ready...";
+
+      document.getElementById("guessArea").style.display = "none";
+
+      const input = document.getElementById("guessInput");
       input.value = "";
 
-      saveTasks();
-      renderTasks();
+      const dotArea = document.getElementById("dotArea");
+
+      dotArea.innerHTML = "";
+
+      /*
+        The number of dots gets slightly harder
+        as the rounds progress.
+      */
+
+      const minDots = 3 + (currentRound - 1) * 2;
+      const maxDots = 7 + (currentRound - 1) * 4;
+
+      correctAnswer =
+        Math.floor(Math.random() * (maxDots - minDots + 1))
+        + minDots;
+
+
+      // Small pause before the dots appear
+
+      setTimeout(() => {
+
+        showDots(correctAnswer);
+
+        document.getElementById("message").textContent =
+          "COUNT!";
+
+        /*
+          How long the dots stay visible.
+          Lower number = harder.
+        */
+
+        const displayTime =
+          Math.max(350, 850 - currentRound * 100);
+
+        setTimeout(() => {
+
+          dotArea.innerHTML = "";
+
+          document.getElementById("message").textContent =
+            "How many dots were there?";
+
+          document.getElementById("guessArea").style.display =
+            "flex";
+
+          acceptingGuess = true;
+
+          document.getElementById("guessInput").focus();
+
+        }, displayTime);
+
+      }, 700);
     }
 
-    function toggleTask(id) {
-      tasks = tasks.map(task => {
-        if (task.id === id) {
-          return {
-            ...task,
-            completed: !task.completed
-          };
-        }
 
-        return task;
-      });
+    function showDots(numberOfDots) {
 
-      saveTasks();
-      renderTasks();
+      const dotArea = document.getElementById("dotArea");
+
+      dotArea.innerHTML = "";
+
+      for (let i = 0; i < numberOfDots; i++) {
+
+        const dot = document.createElement("div");
+
+        dot.className = "dot";
+
+        /*
+          Keep dots away from the edges.
+        */
+
+        const x = 8 + Math.random() * 84;
+        const y = 8 + Math.random() * 84;
+
+        dot.style.left = x + "%";
+        dot.style.top = y + "%";
+
+        dotArea.appendChild(dot);
+      }
     }
 
-    function deleteTask(id) {
-      tasks = tasks.filter(task => task.id !== id);
 
-      saveTasks();
-      renderTasks();
-    }
+    function submitGuess() {
 
-    function resetTasks() {
-      if (!confirm("Are you sure you want to delete all tasks?")) {
+      if (!acceptingGuess) return;
+
+      const input =
+        document.getElementById("guessInput");
+
+      const guess = Number(input.value);
+
+      if (!Number.isInteger(guess) || guess < 1) {
+        document.getElementById("message").textContent =
+          "Enter a valid number.";
+
         return;
       }
 
-      tasks = [];
+      acceptingGuess = false;
 
-      saveTasks();
-      renderTasks();
-    }
+      if (guess === correctAnswer) {
 
-    function renderTasks() {
-      const taskList = document.getElementById("taskList");
+        score++;
 
-      const total = tasks.length;
-      const completed = tasks.filter(task => task.completed).length;
-      const remaining = total - completed;
+        document.getElementById("message").innerHTML =
+          `<span class="correct">
+            Correct! There were ${correctAnswer} dots.
+          </span>`;
 
-      const percentage =
-        total === 0
-          ? 0
-          : Math.round((completed / total) * 100);
+      } else {
 
-      document.getElementById("total").textContent = total;
-      document.getElementById("completed").textContent = completed;
-      document.getElementById("remaining").textContent = remaining;
-      document.getElementById("percentage").textContent = percentage + "%";
-      document.getElementById("progress").style.width = percentage + "%";
-
-      if (tasks.length === 0) {
-        taskList.innerHTML = `
-          <div class="empty">
-            No tasks yet. Add your first task above!
-          </div>
-        `;
-        return;
+        document.getElementById("message").innerHTML =
+          `<span class="wrong">
+            Wrong! There were ${correctAnswer} dots.
+          </span>`;
       }
 
-      taskList.innerHTML = tasks.map(task => `
-        <div class="task ${task.completed ? "completed" : ""}">
+      document.getElementById("guessArea").style.display =
+        "none";
 
-          <div
-            class="checkbox"
-            onclick="toggleTask(${task.id})"
-          ></div>
 
-          <div class="task-text">
-            ${escapeHTML(task.text)}
-          </div>
+      // Move to the next round after a short pause
 
-          <button
-            class="delete"
-            onclick="deleteTask(${task.id})"
-          >
-            Delete
-          </button>
-
-        </div>
-      `).join("");
+      setTimeout(() => {
+        nextRound();
+      }, 1500);
     }
 
-    function escapeHTML(text) {
-      const div = document.createElement("div");
-      div.textContent = text;
-      return div.innerHTML;
+
+    function endGame() {
+
+      document.getElementById("gameScreen").style.display =
+        "none";
+
+      document.getElementById("result").style.display =
+        "block";
+
+      document.getElementById("finalScore").textContent =
+        score;
+
+      let message;
+
+      if (score === 5) {
+        message = "Perfect! Incredible counting!";
+      } else if (score >= 4) {
+        message = "Amazing job! Your visual memory is strong.";
+      } else if (score >= 3) {
+        message = "Nice work! Try again and beat your score.";
+      } else if (score >= 1) {
+        message = "Good start. Give it another try!";
+      } else {
+        message = "That was tough! Try again.";
+      }
+
+      document.getElementById("resultMessage").textContent =
+        message;
     }
 
-    document.getElementById("taskInput").addEventListener(
+
+    function restartGame() {
+
+      document.getElementById("result").style.display =
+        "none";
+
+      document.getElementById("gameScreen").style.display =
+        "block";
+
+      document.getElementById("startButton").style.display =
+        "inline-block";
+
+      document.getElementById("dotArea").innerHTML = "";
+
+      document.getElementById("round").textContent =
+        "Round 0 / 5";
+
+      document.getElementById("message").textContent =
+        "Press Start when you're ready.";
+    }
+
+
+    // Press Enter to submit the answer
+
+    document.getElementById("guessInput").addEventListener(
       "keydown",
       function(event) {
+
         if (event.key === "Enter") {
-          addTask();
+          submitGuess();
         }
+
       }
     );
 
-    renderTasks();
   </script>
 
 </body>
 </html>
-```
