@@ -32,6 +32,42 @@
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
     }
 
+    /* =========================
+       HOME SCREEN
+    ========================= */
+
+    #homeScreen h1 {
+      font-size: 55px;
+      margin: 10px 0;
+    }
+
+    .logo {
+      font-size: 75px;
+      margin-bottom: 10px;
+    }
+
+    .home-description {
+      color: #94a3b8;
+      font-size: 18px;
+      line-height: 1.6;
+      margin: 20px auto 35px;
+      max-width: 450px;
+    }
+
+    .play-button {
+      font-size: 22px;
+      padding: 17px 55px;
+    }
+
+
+    /* =========================
+       GAME SCREEN
+    ========================= */
+
+    #gameScreen {
+      display: none;
+    }
+
     h1 {
       font-size: 42px;
       margin-top: 0;
@@ -46,7 +82,7 @@
       font-size: 18px;
       color: #60a5fa;
       font-weight: bold;
-      margin: 25px 0;
+      margin: 20px 0;
     }
 
     #dotArea {
@@ -56,13 +92,13 @@
       border-radius: 15px;
       position: relative;
       overflow: hidden;
-      margin: 20px 0;
+      margin: 15px 0;
     }
 
     .dot {
       position: absolute;
-      width: 20px;
-      height: 20px;
+      width: 19px;
+      height: 19px;
       background: white;
       border-radius: 50%;
       transform: translate(-50%, -50%);
@@ -72,7 +108,7 @@
     #message {
       font-size: 21px;
       min-height: 30px;
-      margin: 20px 0;
+      margin: 15px 0;
     }
 
     .guess-area {
@@ -104,41 +140,37 @@
       cursor: pointer;
       background: #3b82f6;
       color: white;
+      transition: 0.15s;
     }
 
     button:hover {
       background: #2563eb;
+      transform: translateY(-1px);
     }
 
-    #startButton {
-      margin-top: 20px;
-      font-size: 20px;
-      padding: 16px 35px;
-    }
+
+    /* =========================
+       RESULT SCREEN
+    ========================= */
 
     #result {
       display: none;
     }
 
-    .score {
-      font-size: 60px;
-      font-weight: bold;
-      color: #22c55e;
-      margin: 20px;
+    .result-icon {
+      font-size: 65px;
     }
 
     .precision {
-      font-size: 28px;
+      font-size: 65px;
       font-weight: bold;
-      margin: 15px 0;
-    }
-
-    .correct {
       color: #22c55e;
+      margin: 15px;
     }
 
-    .wrong {
-      color: #ef4444;
+    .exact {
+      color: #cbd5e1;
+      font-size: 18px;
     }
 
     .round-results {
@@ -155,37 +187,111 @@
       border-radius: 8px;
       color: #cbd5e1;
     }
+
+    .result-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 25px;
+    }
+
+    .home-button {
+      background: #475569;
+    }
+
+    .home-button:hover {
+      background: #334155;
+    }
+
+    .correct {
+      color: #22c55e;
+    }
+
+    .wrong {
+      color: #ef4444;
+    }
+
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 550px) {
+
+      .game {
+        padding: 25px;
+      }
+
+      #homeScreen h1 {
+        font-size: 42px;
+      }
+
+      .logo {
+        font-size: 60px;
+      }
+
+      .result-buttons {
+        flex-direction: column;
+      }
+
+      .result-buttons button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
+
 
 <body>
 
   <div class="game">
 
-    <!-- GAME SCREEN -->
+
+    <!-- =========================
+         HOME SCREEN
+    ========================= -->
+
+    <div id="homeScreen">
+
+      <div class="logo">● ● ●</div>
+
+      <h1>Dot Guess</h1>
+
+      <p class="home-description">
+        How good is your visual counting?
+        <br><br>
+        You'll see a group of dots for a
+        split second. Count them and try
+        to guess the exact number.
+      </p>
+
+      <button
+        class="play-button"
+        onclick="startGame()"
+      >
+        ▶ Play
+      </button>
+
+    </div>
+
+
+    <!-- =========================
+         GAME SCREEN
+    ========================= -->
 
     <div id="gameScreen">
 
       <h1>Dot Guess</h1>
 
-      <p class="instructions">
-        Quickly count the dots.<br>
-        They'll disappear almost immediately!
-      </p>
-
       <div class="round" id="round">
-        Round 0 / 5
+        Round 1 / 5
       </div>
 
       <div id="dotArea"></div>
 
       <div id="message">
-        Press Start when you're ready.
+        Get ready...
       </div>
-
-      <button id="startButton" onclick="startGame()">
-        Start Game
-      </button>
 
       <div class="guess-area" id="guessArea">
 
@@ -195,6 +301,7 @@
           min="1"
           max="10"
           placeholder="1 - 10"
+          autocomplete="off"
         >
 
         <button onclick="submitGuess()">
@@ -206,11 +313,17 @@
     </div>
 
 
-    <!-- RESULT SCREEN -->
+    <!-- =========================
+         RESULT SCREEN
+    ========================= -->
 
     <div id="result">
 
-      <h1>Game Over!</h1>
+      <div class="result-icon">
+        🧠
+      </div>
+
+      <h1>Game Complete!</h1>
 
       <p>Your precision:</p>
 
@@ -218,16 +331,30 @@
         <span id="precision">0%</span>
       </div>
 
-      <p>
+      <p class="exact">
         Exact guesses:
         <strong id="exactScore">0 / 5</strong>
       </p>
 
-      <div class="round-results" id="roundResults"></div>
+      <div
+        class="round-results"
+        id="roundResults"
+      ></div>
 
-      <button onclick="restartGame()">
-        Play Again
-      </button>
+      <div class="result-buttons">
+
+        <button onclick="startGame()">
+          Play Again
+        </button>
+
+        <button
+          class="home-button"
+          onclick="goHome()"
+        >
+          Exit to Home
+        </button>
+
+      </div>
 
     </div>
 
@@ -236,18 +363,38 @@
 
   <script>
 
+    /*
+      =========================
+      GAME SETTINGS
+      =========================
+    */
+
     const TOTAL_ROUNDS = 5;
+
+    // Minimum and maximum number of dots
+    const MIN_DOTS = 3;
+    const MAX_DOTS = 10;
+
+
+    /*
+      =========================
+      GAME VARIABLES
+      =========================
+    */
 
     let currentRound = 0;
     let correctAnswer = 0;
     let acceptingGuess = false;
 
-    // Stores precision for each round
     let roundPrecisions = [];
-
-    // Stores whether each answer was exactly correct
     let exactGuesses = 0;
 
+
+    /*
+      =========================
+      START GAME
+      =========================
+    */
 
     function startGame() {
 
@@ -255,11 +402,24 @@
       roundPrecisions = [];
       exactGuesses = 0;
 
-      document.getElementById("startButton").style.display = "none";
+      document.getElementById("homeScreen").style.display =
+        "none";
+
+      document.getElementById("result").style.display =
+        "none";
+
+      document.getElementById("gameScreen").style.display =
+        "block";
 
       nextRound();
     }
 
+
+    /*
+      =========================
+      NEXT ROUND
+      =========================
+    */
 
     function nextRound() {
 
@@ -285,15 +445,18 @@
 
 
       /*
-        Every round has between 3 and 10 dots.
+        Generate 3–10 dots.
       */
 
       correctAnswer =
-        Math.floor(Math.random() * 8) + 3;
+        Math.floor(
+          Math.random() *
+          (MAX_DOTS - MIN_DOTS + 1)
+        ) + MIN_DOTS;
 
 
       /*
-        Very short preparation time.
+        Only 150ms preparation time.
       */
 
       setTimeout(() => {
@@ -305,25 +468,26 @@
 
 
         /*
-          Dots stay visible for:
-          
-          Round 1: 650 ms
-          Round 2: 600 ms
-          Round 3: 550 ms
-          Round 4: 500 ms
-          Round 5: 450 ms
+          Dots are shown VERY briefly.
+
+          Round 1 = 450ms
+          Round 2 = 400ms
+          Round 3 = 350ms
+          Round 4 = 300ms
+          Round 5 = 250ms
         */
 
         const displayTime =
-          700 - currentRound * 50;
+          500 - currentRound * 50;
 
 
         setTimeout(() => {
 
-          document.getElementById("dotArea").innerHTML = "";
+          document.getElementById("dotArea").innerHTML =
+            "";
 
           document.getElementById("message").textContent =
-            "How many dots?";
+            "How many?";
 
           document.getElementById("guessArea").style.display =
             "flex";
@@ -334,28 +498,40 @@
 
         }, displayTime);
 
-      }, 300);
+      }, 150);
     }
 
 
+    /*
+      =========================
+      SHOW DOTS
+      =========================
+    */
+
     function showDots(numberOfDots) {
 
-      const dotArea = document.getElementById("dotArea");
+      const dotArea =
+        document.getElementById("dotArea");
 
       dotArea.innerHTML = "";
 
       for (let i = 0; i < numberOfDots; i++) {
 
-        const dot = document.createElement("div");
+        const dot =
+          document.createElement("div");
 
         dot.className = "dot";
 
+
         /*
-          Keep dots away from the edges.
+          Random position.
         */
 
-        const x = 8 + Math.random() * 84;
-        const y = 8 + Math.random() * 84;
+        const x =
+          8 + Math.random() * 84;
+
+        const y =
+          8 + Math.random() * 84;
 
         dot.style.left = x + "%";
         dot.style.top = y + "%";
@@ -364,6 +540,12 @@
       }
     }
 
+
+    /*
+      =========================
+      SUBMIT GUESS
+      =========================
+    */
 
     function submitGuess() {
 
@@ -375,14 +557,18 @@
       const guess = Number(input.value);
 
 
+      /*
+        Validate input.
+      */
+
       if (
         !Number.isInteger(guess) ||
-        guess < 1 ||
-        guess > 10
+        guess < MIN_DOTS ||
+        guess > MAX_DOTS
       ) {
 
         document.getElementById("message").textContent =
-          "Enter a number from 1 to 10.";
+          `Enter a number from ${MIN_DOTS} to ${MAX_DOTS}.`;
 
         return;
       }
@@ -392,20 +578,23 @@
 
 
       /*
-        Calculate precision for this round.
+        Calculate precision.
 
         Example:
-        Correct = 10
-        Guess = 8
 
-        Precision = 80%
+        Actual = 8
+        Guess  = 7
+
+        Precision = 87.5%
       */
 
       const precision =
         Math.max(
           0,
-          100 - Math.abs(guess - correctAnswer)
-                / correctAnswer * 100
+          100 -
+          Math.abs(guess - correctAnswer)
+          / correctAnswer
+          * 100
         );
 
 
@@ -418,15 +607,15 @@
 
         document.getElementById("message").innerHTML =
           `<span class="correct">
-            Perfect! There were ${correctAnswer}.
+            ✓ Correct! It was ${correctAnswer}.
           </span>`;
 
       } else {
 
         document.getElementById("message").innerHTML =
           `<span class="wrong">
-            There were ${correctAnswer} dots.
-            Your precision: ${Math.round(precision)}%
+            ✕ It was ${correctAnswer}.
+            You were ${Math.round(precision)}% accurate.
           </span>`;
       }
 
@@ -436,14 +625,20 @@
 
 
       /*
-        Wait briefly before the next round.
+        Only 500ms between rounds.
       */
 
       setTimeout(() => {
         nextRound();
-      }, 1000);
+      }, 500);
     }
 
+
+    /*
+      =========================
+      END GAME
+      =========================
+    */
 
     function endGame() {
 
@@ -455,7 +650,7 @@
 
 
       /*
-        Average precision across all 5 rounds.
+        Calculate average precision.
       */
 
       const totalPrecision =
@@ -477,7 +672,7 @@
 
 
       /*
-        Show the result of every round.
+        Display every round.
       */
 
       const results =
@@ -485,57 +680,67 @@
 
       results.innerHTML = "";
 
-      roundPrecisions.forEach((precision, index) => {
 
-        const row = document.createElement("div");
+      roundPrecisions.forEach(
+        (precision, index) => {
 
-        row.className = "round-result";
+          const row =
+            document.createElement("div");
 
-        row.innerHTML = `
-          <span>Round ${index + 1}</span>
-          <strong>${Math.round(precision)}%</strong>
-        `;
+          row.className = "round-result";
 
-        results.appendChild(row);
-      });
+          row.innerHTML = `
+            <span>Round ${index + 1}</span>
+            <strong>${Math.round(precision)}%</strong>
+          `;
+
+          results.appendChild(row);
+        }
+      );
     }
 
 
-    function restartGame() {
+    /*
+      =========================
+      GO HOME
+      =========================
+    */
+
+    function goHome() {
 
       document.getElementById("result").style.display =
         "none";
 
       document.getElementById("gameScreen").style.display =
+        "none";
+
+      document.getElementById("homeScreen").style.display =
         "block";
 
-      document.getElementById("startButton").style.display =
-        "inline-block";
+      document.getElementById("dotArea").innerHTML =
+        "";
 
-      document.getElementById("dotArea").innerHTML = "";
-
-      document.getElementById("round").textContent =
-        "Round 0 / 5";
-
-      document.getElementById("message").textContent =
-        "Press Start when you're ready.";
+      acceptingGuess = false;
     }
 
 
     /*
-      Press Enter to submit the guess.
+      =========================
+      ENTER KEY
+      =========================
     */
 
-    document.getElementById("guessInput").addEventListener(
-      "keydown",
-      function(event) {
+    document.getElementById("guessInput")
+      .addEventListener(
+        "keydown",
+        function(event) {
 
-        if (event.key === "Enter") {
-          submitGuess();
+          if (event.key === "Enter") {
+            submitGuess();
+          }
+
         }
-
-      }
-    );
+      );
 
   </script>
 
