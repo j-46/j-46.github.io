@@ -1,10 +1,10 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dot Guessing Game</title>
+  <title>Dot Guess</title>
 
   <style>
     * {
@@ -39,7 +39,6 @@
 
     .instructions {
       color: #94a3b8;
-      font-size: 17px;
       line-height: 1.5;
     }
 
@@ -71,7 +70,7 @@
     }
 
     #message {
-      font-size: 22px;
+      font-size: 21px;
       min-height: 30px;
       margin: 20px 0;
     }
@@ -90,6 +89,10 @@
       font-size: 18px;
       text-align: center;
       outline: none;
+    }
+
+    input:focus {
+      outline: 2px solid #3b82f6;
     }
 
     button {
@@ -124,9 +127,10 @@
       margin: 20px;
     }
 
-    .answer {
-      color: #94a3b8;
-      font-size: 18px;
+    .precision {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 15px 0;
     }
 
     .correct {
@@ -136,6 +140,21 @@
     .wrong {
       color: #ef4444;
     }
+
+    .round-results {
+      margin: 25px 0;
+      text-align: left;
+    }
+
+    .round-result {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 15px;
+      margin: 6px 0;
+      background: #0f172a;
+      border-radius: 8px;
+      color: #cbd5e1;
+    }
   </style>
 </head>
 
@@ -143,13 +162,15 @@
 
   <div class="game">
 
+    <!-- GAME SCREEN -->
+
     <div id="gameScreen">
 
       <h1>Dot Guess</h1>
 
       <p class="instructions">
-        You'll see some dots for a very short time.<br>
-        Try to remember how many there were!
+        Quickly count the dots.<br>
+        They'll disappear almost immediately!
       </p>
 
       <div class="round" id="round">
@@ -167,32 +188,42 @@
       </button>
 
       <div class="guess-area" id="guessArea">
+
         <input
           id="guessInput"
           type="number"
           min="1"
-          placeholder="Your guess"
+          max="10"
+          placeholder="1 - 10"
         >
 
         <button onclick="submitGuess()">
           Guess
         </button>
+
       </div>
 
     </div>
 
 
+    <!-- RESULT SCREEN -->
+
     <div id="result">
 
       <h1>Game Over!</h1>
 
-      <p>Your score:</p>
+      <p>Your precision:</p>
 
-      <div class="score">
-        <span id="finalScore">0</span> / 5
+      <div class="precision">
+        <span id="precision">0%</span>
       </div>
 
-      <p id="resultMessage"></p>
+      <p>
+        Exact guesses:
+        <strong id="exactScore">0 / 5</strong>
+      </p>
+
+      <div class="round-results" id="roundResults"></div>
 
       <button onclick="restartGame()">
         Play Again
@@ -208,18 +239,23 @@
     const TOTAL_ROUNDS = 5;
 
     let currentRound = 0;
-    let score = 0;
     let correctAnswer = 0;
     let acceptingGuess = false;
+
+    // Stores precision for each round
+    let roundPrecisions = [];
+
+    // Stores whether each answer was exactly correct
+    let exactGuesses = 0;
 
 
     function startGame() {
 
       currentRound = 0;
-      score = 0;
+      roundPrecisions = [];
+      exactGuesses = 0;
 
       document.getElementById("startButton").style.display = "none";
-      document.getElementById("guessArea").style.display = "none";
 
       nextRound();
     }
@@ -240,29 +276,25 @@
       document.getElementById("message").textContent =
         "Get ready...";
 
-      document.getElementById("guessArea").style.display = "none";
+      document.getElementById("guessArea").style.display =
+        "none";
 
-      const input = document.getElementById("guessInput");
-      input.value = "";
+      document.getElementById("dotArea").innerHTML = "";
 
-      const dotArea = document.getElementById("dotArea");
+      document.getElementById("guessInput").value = "";
 
-      dotArea.innerHTML = "";
 
       /*
-        The number of dots gets slightly harder
-        as the rounds progress.
+        Every round has between 3 and 10 dots.
       */
 
-      const minDots = 3 + (currentRound - 1) * 2;
-      const maxDots = 7 + (currentRound - 1) * 4;
-
       correctAnswer =
-        Math.floor(Math.random() * (maxDots - minDots + 1))
-        + minDots;
+        Math.floor(Math.random() * 8) + 3;
 
 
-      // Small pause before the dots appear
+      /*
+        Very short preparation time.
+      */
 
       setTimeout(() => {
 
@@ -271,20 +303,27 @@
         document.getElementById("message").textContent =
           "COUNT!";
 
+
         /*
-          How long the dots stay visible.
-          Lower number = harder.
+          Dots stay visible for:
+          
+          Round 1: 650 ms
+          Round 2: 600 ms
+          Round 3: 550 ms
+          Round 4: 500 ms
+          Round 5: 450 ms
         */
 
         const displayTime =
-          Math.max(350, 850 - currentRound * 100);
+          700 - currentRound * 50;
+
 
         setTimeout(() => {
 
-          dotArea.innerHTML = "";
+          document.getElementById("dotArea").innerHTML = "";
 
           document.getElementById("message").textContent =
-            "How many dots were there?";
+            "How many dots?";
 
           document.getElementById("guessArea").style.display =
             "flex";
@@ -295,7 +334,7 @@
 
         }, displayTime);
 
-      }, 700);
+      }, 300);
     }
 
 
@@ -335,41 +374,74 @@
 
       const guess = Number(input.value);
 
-      if (!Number.isInteger(guess) || guess < 1) {
+
+      if (
+        !Number.isInteger(guess) ||
+        guess < 1 ||
+        guess > 10
+      ) {
+
         document.getElementById("message").textContent =
-          "Enter a valid number.";
+          "Enter a number from 1 to 10.";
 
         return;
       }
 
+
       acceptingGuess = false;
+
+
+      /*
+        Calculate precision for this round.
+
+        Example:
+        Correct = 10
+        Guess = 8
+
+        Precision = 80%
+      */
+
+      const precision =
+        Math.max(
+          0,
+          100 - Math.abs(guess - correctAnswer)
+                / correctAnswer * 100
+        );
+
+
+      roundPrecisions.push(precision);
+
 
       if (guess === correctAnswer) {
 
-        score++;
+        exactGuesses++;
 
         document.getElementById("message").innerHTML =
           `<span class="correct">
-            Correct! There were ${correctAnswer} dots.
+            Perfect! There were ${correctAnswer}.
           </span>`;
 
       } else {
 
         document.getElementById("message").innerHTML =
           `<span class="wrong">
-            Wrong! There were ${correctAnswer} dots.
+            There were ${correctAnswer} dots.
+            Your precision: ${Math.round(precision)}%
           </span>`;
       }
+
 
       document.getElementById("guessArea").style.display =
         "none";
 
 
-      // Move to the next round after a short pause
+      /*
+        Wait briefly before the next round.
+      */
 
       setTimeout(() => {
         nextRound();
-      }, 1500);
+      }, 1000);
     }
 
 
@@ -381,25 +453,51 @@
       document.getElementById("result").style.display =
         "block";
 
-      document.getElementById("finalScore").textContent =
-        score;
 
-      let message;
+      /*
+        Average precision across all 5 rounds.
+      */
 
-      if (score === 5) {
-        message = "Perfect! Incredible counting!";
-      } else if (score >= 4) {
-        message = "Amazing job! Your visual memory is strong.";
-      } else if (score >= 3) {
-        message = "Nice work! Try again and beat your score.";
-      } else if (score >= 1) {
-        message = "Good start. Give it another try!";
-      } else {
-        message = "That was tough! Try again.";
-      }
+      const totalPrecision =
+        roundPrecisions.reduce(
+          (sum, value) => sum + value,
+          0
+        );
 
-      document.getElementById("resultMessage").textContent =
-        message;
+      const averagePrecision =
+        totalPrecision / TOTAL_ROUNDS;
+
+
+      document.getElementById("precision").textContent =
+        Math.round(averagePrecision) + "%";
+
+
+      document.getElementById("exactScore").textContent =
+        `${exactGuesses} / ${TOTAL_ROUNDS}`;
+
+
+      /*
+        Show the result of every round.
+      */
+
+      const results =
+        document.getElementById("roundResults");
+
+      results.innerHTML = "";
+
+      roundPrecisions.forEach((precision, index) => {
+
+        const row = document.createElement("div");
+
+        row.className = "round-result";
+
+        row.innerHTML = `
+          <span>Round ${index + 1}</span>
+          <strong>${Math.round(precision)}%</strong>
+        `;
+
+        results.appendChild(row);
+      });
     }
 
 
@@ -424,7 +522,9 @@
     }
 
 
-    // Press Enter to submit the answer
+    /*
+      Press Enter to submit the guess.
+    */
 
     document.getElementById("guessInput").addEventListener(
       "keydown",
@@ -441,3 +541,4 @@
 
 </body>
 </html>
+```
